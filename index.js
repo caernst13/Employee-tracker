@@ -40,8 +40,7 @@ const viewAllRoles = () => {
 const viewAllEmployees = () => {
     const sql = `SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name AS 'department', role.salary
     FROM employee, role, department 
-    WHERE department.id = role.department_id 
-    AND role.id = employee.role_id`;
+    WHERE department.id = role.department_id AND role.id = employee.role_id`;
     connection.query(sql, (err, res) => {
         if (err) {
             res.status(400).json({ error: err.message})
@@ -137,9 +136,74 @@ const AddRole = () => {
                 };
                 console.log('New department added!')
                 init();
-            })
+            });
+        });
+    });
+};
+
+const AddEmployee = () => {
+    const depsql = 'SELECT role.title as title, role.id as id FROM role'
+    connection.query(depsql, (err, res) => {
+        if (err) {
+            res.status(400).json({ error: err.message})
+        };
+        let titleArray = []
+        res.forEach((role) => {titleArray.push(role.title)})
+        console.log(titleArray)
+        inquirer.prompt([
+            {
+                type: 'list',
+                name: 'newRole',
+                message: 'What is the role of this new employee?',
+                choices: titleArray
+            },
+            {
+                type: 'input',
+                name: 'firstName',
+                message: 'What is this employees first name?',
+                validate: newFirstNAme => {
+                    if (newFirstNAme) {
+                        return true;
+                    } else {
+                        console.log('Please enter a first name')
+                        return false;
+                    };
+                }
+            },
+            {
+                type: 'input',
+                name: 'lastName',
+                message: 'What is this employees last name?',
+                validate: nnewFirstName => {
+                    if (nnewFirstName) {
+                        return true;
+                    } else {
+                        console.log('Please enter a last name')
+                        return false;
+                    };
+                }
+            }
+        ]).then((data) => {
+            let roleId = '';
+
+            res.forEach((role) => {
+                if (role.title === data.newRole) {
+                    roleId = role.id
+                };
+            });
+
+            const sql = `INSERT INTO employee (first_name, last_name, role_id) VALUES (?, ?, ?)`;
+            const roleData = [data.firstName, data.lastName, roleId]
+
+            connection.query(sql, roleData, (err, res) => {
+                if (err) {
+                    res.status(400).json({ error: err.message})
+                };
+                console.log('New employee added!')
+                init();
+            });
         })
-    })
-}
+    });
+};
 
 init();
