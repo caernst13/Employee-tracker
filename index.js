@@ -85,7 +85,42 @@ const AddRole = () => {
         };
         let departmentArray = []
         res.forEach((department) => {departmentArray.push(department.name)})
-        console.log(departmentArray)
+        inquirer.prompt([
+            {
+                type: 'list',
+                name: 'departmentName',
+                message: 'Which department does this new role fall under',
+                choices: departmentArray
+            },
+            {
+                type: 'input',
+                name: 'roletitle',
+                message: 'What is the title for this new role',
+                validate: newRoleTitle => {
+                    if (newRoleTitle) {
+                        return true;
+                    } else {
+                        console.log('Please enter a name for your new department')
+                        return false;
+                    };
+                }
+            },
+            {
+                type: 'number',
+                name: 'roleSalary',
+                message: 'What is the salary for this new role',
+                validate: newRoleSalary => {
+                    if (newRoleSalary) {
+                        return true;
+                    } else {
+                        console.log('Please enter a name for your new department')
+                        return false;
+                    };
+                }
+            }
+        ]).then((data) => {
+            console.log(data)
+        })
     })
 }
 
