@@ -206,4 +206,15 @@ const AddEmployee = () => {
     });
 };
 
+const updateEmployee = () => {
+    const sql = `SELECT employee.id, role.id AS role_id FROM employee, role, department WHERE department.id = role.department_id AND role.id = employee.role_id`;
+    connection.query(sql, (err, res) => {
+        console.log(res)
+        employeeArray=[]
+        res.forEach((employee) => {employeeArray.push(employee.id)})
+        console.log(employeeArray)
+        process.exit()
+    })
+}
+
 init();
