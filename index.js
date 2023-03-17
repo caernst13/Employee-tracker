@@ -17,7 +17,7 @@ const init = () => {inquirer.prompt(initialQuestion).then((data) => {
 })};
 
 const viewAllDeparments = () => {
-    const sql = `SELECT department.id AS id, department.name AS department FROM department`;
+    const sql = `SELECT * FROM department`;
     connection.query(sql, (err, res) => {
         if (err) {
             res.status(400).json({ error: err.message})
@@ -28,7 +28,7 @@ const viewAllDeparments = () => {
 };
 
 const viewAllRoles = () => {
-    const sql = `SELECT role.id AS id, role.title AS title, role.salary AS salary FROM role JOIN department ON role.department_id = department.id`;
+    const sql = `SELECT * FROM role JOIN department ON role.department_id = department.id`;
     connection.query(sql, (err, res) => {
         if (err) {
             res.status(400).json({ error: err.message})
@@ -39,7 +39,10 @@ const viewAllRoles = () => {
 };
 
 const viewAllEmployees = () => {
-    const sql = `SELECT department.id AS id, department.name AS department FROM department`;
+    const sql = `SELECT employee.id, employee.first_name, employee.last_name, role.title, department.name AS 'department', role.salary
+    FROM employee, role, department 
+    WHERE department.id = role.department_id 
+    AND role.id = employee.role_id`;
     connection.query(sql, (err, res) => {
         if (err) {
             res.status(400).json({ error: err.message})
