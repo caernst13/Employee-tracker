@@ -77,4 +77,16 @@ const AddDepartment = () => {
     })
 };
 
+const AddRole = () => {
+    const sql = 'SELECT department.name as name FROM department'
+    connection.query(sql, (err, res) => {
+        if (err) {
+            res.status(400).json({ error: err.message})
+        };
+        let departmentArray = []
+        res.forEach((department) => {departmentArray.push(department.name)})
+        console.log(departmentArray)
+    })
+}
+
 init();
