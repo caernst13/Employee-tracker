@@ -72,14 +72,15 @@ const AddDepartment = () => {
             if (err) {
                 res.status(400).json({ error: err.message})
             };
-            console.log('Departments updated') 
+            console.log('New department added!') 
+            init();
         });
     })
 };
 
 const AddRole = () => {
-    const sql = 'SELECT department.name as name FROM department'
-    connection.query(sql, (err, res) => {
+    const depsql = 'SELECT department.name as name, department.id as id FROM department'
+    connection.query(depsql, (err, res) => {
         if (err) {
             res.status(400).json({ error: err.message})
         };
@@ -94,7 +95,7 @@ const AddRole = () => {
             },
             {
                 type: 'input',
-                name: 'roletitle',
+                name: 'roleTitle',
                 message: 'What is the title for this new role',
                 validate: newRoleTitle => {
                     if (newRoleTitle) {
@@ -119,7 +120,24 @@ const AddRole = () => {
                 }
             }
         ]).then((data) => {
-            console.log(data)
+            let departmentId = '';
+
+            res.forEach((department) => {
+                if (department.name === data.departmentName) {
+                    departmentId = department.id
+                };
+            });
+
+            const sql = `INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)`;
+            const roleData = [data.roleTitle, data.roleSalary, departmentId]
+
+            connection.query(sql, roleData, (err, res) => {
+                if (err) {
+                    res.status(400).json({ error: err.message})
+                };
+                console.log('New department added!')
+                init();
+            })
         })
     })
 }
