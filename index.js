@@ -9,6 +9,7 @@ const init = () => {inquirer.prompt(initialQuestion).then((data) => {
         case 'View all roles': viewAllRoles(); break;
         case 'View all employees': viewAllEmployees(); break;
         case 'Add a department': AddDepartment(); break;
+        case 'Add a role': AddRole(); break
         case 'Add an employee': AddEmployee(); break;
         case 'Update an employee role': updateEmployee(); break;
         default: process.exit();
