@@ -3,7 +3,6 @@ const connection = require('./config/connection')
 const initialQuestion = require('./question')
 
 const init = () => {inquirer.prompt(initialQuestion).then((data) => {
-    console.log(data)
     switch (data.action) {
         case 'View all departments': viewAllDeparments(); break;
         case 'View all roles': viewAllRoles(); break;
@@ -50,6 +49,32 @@ const viewAllEmployees = () => {
         console.table(res)
         init();
     });
+};
+
+const AddDepartment = () => {
+    inquirer.prompt([
+        {
+            type: 'input',
+            name: 'newDepartment',
+            message: 'What is the name of your new department?',
+            validate: newDepartmentInput => {
+                if (newDepartmentInput) {
+                    return true;
+                } else {
+                    console.log('Please enter a name for your new department')
+                    return false;
+                };
+            }
+        }
+    ]).then((data) => {
+        const sql = `INSERT INTO department (name) VALUES (?)`;
+        connection.query(sql, data.newDepartment, (err, res) => {
+            if (err) {
+                res.status(400).json({ error: err.message})
+            };
+            console.log('Departments updated') 
+        });
+    })
 };
 
 init();
