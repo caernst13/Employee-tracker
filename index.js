@@ -240,19 +240,28 @@ const updateEmployee = () => {
                 }
             ]).then((data) => {
                 var newTitleId = '';
-
+                
                 res.forEach((role) => {
                     if (data.newRole === role.title) {
                         newTitleId = role.id;
                     }});
+                
+                const sql = `UPDATE employee SET employee.role_id = ? WHERE employee.id = ?`;
+                const updateData = [newTitleId, data.employee];
+                connection.query(sql, updateData, (err, res) => {
+                    if (err) {
+                        res.status(400).json({ error: err.message})
+                    };
+                    console.log('employee updated');
+                    init();
+                });
+                
 
-
-            })
+            });
             
 
-        })
-        process.exit()
-    })
+        });
+    });
 }
 
 init();
