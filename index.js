@@ -209,10 +209,48 @@ const AddEmployee = () => {
 const updateEmployee = () => {
     const sql = `SELECT employee.id, role.id AS role_id FROM employee, role, department WHERE department.id = role.department_id AND role.id = employee.role_id`;
     connection.query(sql, (err, res) => {
+        if (err) {
+            res.status(400).json({ error: err.message});
+        };
         console.log(res)
         employeeArray=[]
-        res.forEach((employee) => {employeeArray.push(employee.id)})
+        res.forEach((employee) => {employeeArray.push(employee.id)});
         console.log(employeeArray)
+
+        const sql = `SELECT role.id, role.title FROM role`
+        connection.query(sql, (err, res) => {
+            if (err) {
+                res.status(400).json({ error: err.message});
+            };
+            let roleArray = [];
+            res.forEach((role) => {roleArray.push(role.title)});
+
+            inquirer.prompt([
+                {
+                    type: 'list',
+                    name: 'employee',
+                    message: 'What is the id of the employee you wish to change?',
+                    choices: employeeArray
+                },
+                {
+                    type: 'list',
+                    name: 'newRole',
+                    message: 'What role would you like them to switch to?',
+                    choices: roleArray
+                }
+            ]).then((data) => {
+                var newTitleId = '';
+
+                res.forEach((role) => {
+                    if (data.newRole === role.title) {
+                        newTitleId = role.id;
+                    }});
+
+
+            })
+            
+
+        })
         process.exit()
     })
 }
