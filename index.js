@@ -246,7 +246,7 @@ const updateEmployee = () => {
                         newTitleId = role.id;
                     }});
                 
-                const sql = `UPDATE employee SET employee.role_id = ? WHERE employee.id = ?`;
+                const sql = `UPDATE employee SET employee.role_id = ? WHERE employee.id = ?` ;
                 const updateData = [newTitleId, data.employee];
                 connection.query(sql, updateData, (err, res) => {
                     if (err) {
